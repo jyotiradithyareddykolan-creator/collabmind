@@ -5,7 +5,7 @@ export default function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-ink px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="font-display text-2xl text-paper-soft">Coreference</h1>
+          <h1 className="font-display text-2xl text-paper-soft">CollabMind</h1>
           <p className="text-sm text-text-muted mt-1">Create your account</p>
         </div>
 

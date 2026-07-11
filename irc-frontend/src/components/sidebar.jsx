@@ -22,7 +22,7 @@ export default function Sidebar() {
     <aside className="flex h-screen w-60 flex-col justify-between bg-ink-soft/40 border-r border-white/5 px-3 py-5">
       <div>
         <div className="mb-8 px-3">
-          <span className="font-display text-lg text-paper-soft">Coreference</span>
+          <span className="font-display text-lg text-paper-soft">CollabMind</span>
           <p className="text-xs text-text-muted mt-0.5">
             {user ? user.name : "Research, together."}
           </p>
