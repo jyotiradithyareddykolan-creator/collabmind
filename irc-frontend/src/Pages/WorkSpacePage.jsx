@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import MarginRail from "../components/MarginRail";
 import apiClient from "../api/client";
+import MarkdownText from "../components/MarkdownText";
 
 export default function WorkspacePage() {
   const { id } = useParams();
@@ -524,13 +525,13 @@ export default function WorkspacePage() {
               {messages.map((m, i) => (
                 <div
                   key={i}
-                  className={`max-w-lg rounded-lg px-4 py-2.5 text-sm ${
+                  className={`max-w-lg rounded-lg px-4 py-2.5 ${
                     m.role === "user"
-                      ? "self-end bg-signal text-paper-soft"
+                      ? "self-end bg-signal text-paper-soft text-sm"
                       : "self-start bg-ink-soft text-paper-soft border border-white/5"
                   }`}
                 >
-                  {m.text}
+                  {m.role === "assistant" ? <MarkdownText>{m.text}</MarkdownText> : m.text}
                 </div>
               ))}
               {asking && (
@@ -848,8 +849,8 @@ export default function WorkspacePage() {
                       </div>
 
                       {aiSummary && (
-                        <div className="text-xs text-paper-soft bg-ink rounded-md p-3 whitespace-pre-wrap leading-relaxed">
-                          {aiSummary}
+                        <div className="bg-ink rounded-md p-3">
+                          <MarkdownText className="text-paper-soft">{aiSummary}</MarkdownText>
                         </div>
                       )}
                     </div>
@@ -920,9 +921,7 @@ export default function WorkspacePage() {
                               {new Date(c.createdAt).toLocaleString()}
                             </span>
                           </div>
-                          <p className="text-sm text-paper-soft whitespace-pre-wrap leading-relaxed">
-                            {c.content}
-                          </p>
+                          <MarkdownText className="text-paper-soft">{c.content}</MarkdownText>
                           <div className="flex items-center gap-3 mt-2">
                             <button
                               onClick={() => handleUpvote(c._id)}
