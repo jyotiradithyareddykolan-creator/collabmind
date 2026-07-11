@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/*
+  Design tokens for the Intelligent Research Collaboration Platform.
+  Theme: "researcher's margin" — paper, ink, and highlighter-pen accents,
+  because every AI answer here should feel annotated and sourced, not generic.
+*/
+@theme {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --color-ink: #14171f;
+  --color-ink-soft: #1e2230;
+  --color-paper: #eae7dd;
+  --color-paper-soft: #f2f0e9;
+  --color-amber: #e8b84b;
+  --color-amber-dim: #a9822f;
+  --color-signal: #4c7cf0;
+  --color-signal-dim: #395fc4;
+  --color-text-primary: #1b1d22;
+  --color-text-muted: #5b5f6b;
+  --color-border-soft: #d8d4c6;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-ink);
+  color: var(--color-paper-soft);
+}
