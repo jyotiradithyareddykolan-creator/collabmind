@@ -141,7 +141,10 @@ export default function WorkspacePage() {
       fetchDocuments();
     } catch (err) {
       console.error("Upload failed:", err);
-      alert("Upload failed: " + (err.response?.data?.message || "unknown error"));
+      alert(
+        "Upload failed: " +
+          (err.response?.data?.error || err.response?.data?.message || "unknown error")
+      );
     } finally {
       setUploading(false);
     }
