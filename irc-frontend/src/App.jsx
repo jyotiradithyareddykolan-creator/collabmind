@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AppLayout from "./layouts/AppLayout";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import DashboardPage from "./pages/DashboardPage";
-import WorkspacePage from "./pages/WorkspacePage";
-import TasksPage from "./pages/TasksPage";
-import DocumentsPage from "./pages/DocumentsPage";
+import AppLayout from "./Layouts/AppLayout";
+import LoginPage from "./Pages/LoginPage";
+import SignupPage from "./Pages/SignupPage";
+import DashboardPage from "./Pages/DashboardPage";
+import WorkspacePage from "./Pages/WorkSpacePage";
+import TasksPage from "./Pages/TasksPage";
+import DocumentsPage from "./Pages/DocumentsPage";
 
 export default function App() {
   return (
