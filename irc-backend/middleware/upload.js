@@ -1,14 +1,8 @@
 import multer from "multer";
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
-  },
-});
+// Keep the uploaded file in memory (as a buffer) instead of writing to local disk.
+// This is required because Render's disk is temporary — files would vanish on redeploy.
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {

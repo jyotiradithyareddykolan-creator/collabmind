@@ -1,12 +1,10 @@
-import fs from "fs";
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const { PDFParse } = require("pdf-parse");
 
-// Reads a PDF file from disk and returns its raw text content
-export const extractTextFromPDF = async (filePath) => {
-  const fileBuffer = fs.readFileSync(filePath);
+// Reads a PDF buffer (already in memory) and returns its raw text content
+export const extractTextFromPDF = async (fileBuffer) => {
   const parser = new PDFParse({ data: fileBuffer });
   const result = await parser.getText();
   return result.text;
