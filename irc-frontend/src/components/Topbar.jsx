@@ -1,6 +1,18 @@
 import { Search, Bell } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Topbar({ title, subtitle }) {
+  const { user } = useAuth();
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "?";
+
   return (
     <header className="flex items-center justify-between border-b border-white/5 bg-ink px-8 py-4">
       <div>
@@ -20,7 +32,7 @@ export default function Topbar({ title, subtitle }) {
           <Bell size={18} />
         </button>
         <div className="h-8 w-8 rounded-full bg-signal flex items-center justify-center text-xs font-medium text-paper-soft">
-          JR
+          {initials}
         </div>
       </div>
     </header>

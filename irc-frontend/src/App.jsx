@@ -6,6 +6,7 @@ import DashboardPage from "./Pages/DashboardPage";
 import WorkspacePage from "./Pages/WorkSpacePage";
 import TasksPage from "./Pages/TasksPage";
 import DocumentsPage from "./Pages/DocumentsPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
@@ -14,19 +15,43 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        <Route element={<AppLayout title="Workspaces" subtitle="Your active research groups" />}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <AppLayout title="Workspaces" subtitle="Your active research groups" />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/" element={<DashboardPage />} />
         </Route>
 
-        <Route element={<AppLayout title="Documents" subtitle="Everything you've uploaded" />}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <AppLayout title="Documents" subtitle="Everything you've uploaded" />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/documents" element={<DocumentsPage />} />
         </Route>
 
-        <Route element={<AppLayout title="Tasks" subtitle="What's on your plate" />}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <AppLayout title="Tasks" subtitle="What's on your plate" />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/tasks" element={<TasksPage />} />
         </Route>
 
-        <Route element={<AppLayout title="Workspace" subtitle="Ask questions grounded in your docs" />}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <AppLayout title="Workspace" subtitle="Ask questions grounded in your docs" />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/workspaces/:id" element={<WorkspacePage />} />
         </Route>
       </Routes>
