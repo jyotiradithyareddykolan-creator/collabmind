@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Users, Check, X } from "lucide-react";
+import { Plus, Users, Check, X, Trash2 } from "lucide-react";
 import apiClient from "../api/client";
 
 export default function DashboardPage() {
@@ -9,6 +9,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [newName, setNewName] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchWorkspaces = async () => {
     try {
@@ -66,6 +67,30 @@ export default function DashboardPage() {
       fetchAll();
     } catch (err) {
       console.error("Failed to decline invite:", err);
+    }
+  };
+
+  const handleDelete = async (e, workspaceId, workspaceName) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const confirmed = window.confirm(
+      `Delete "${workspaceName}"? This will permanently remove all its documents, notes, tasks, and debates. This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    setDeletingId(workspaceId);
+    try {
+      await apiClient.delete(`/workspaces/${workspaceId}`);
+      fetchAll();
+    } catch (err) {
+      console.error("Failed to delete workspace:", err);
+      alert(
+        "Failed to delete workspace: " +
+          (err.response?.data?.message || "unknown error")
+      );
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -150,9 +175,20 @@ export default function DashboardPage() {
           <Link
             key={ws._id}
             to={`/workspaces/${ws._id}`}
-            className="rounded-lg bg-ink-soft/50 border border-white/5 p-5 hover:border-amber/40 transition-colors"
+            className="relative rounded-lg bg-ink-soft/50 border border-white/5 p-5 hover:border-amber/40 transition-colors"
           >
-            <h3 className="font-display text-lg text-paper-soft mb-3">
+            {ws.role === "admin" && (
+              <button
+                onClick={(e) => handleDelete(e, ws._id, ws.name)}
+                disabled={deletingId === ws._id}
+                title="Delete workspace"
+                className="absolute top-3 right-3 text-text-muted hover:text-red-400 transition-colors disabled:opacity-50"
+              >
+                <Trash2 size={15} />
+              </button>
+            )}
+
+            <h3 className="font-display text-lg text-paper-soft mb-3 pr-6">
               {ws.name}
             </h3>
             <div className="flex items-center gap-4 text-xs text-text-muted font-mono">

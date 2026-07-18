@@ -3,6 +3,11 @@ import Workspace from "../models/Workspace.js";
 import Membership from "../models/Membership.js";
 import Chunk from "../models/Chunk.js";
 import User from "../models/User.js";
+import Document from "../models/Document.js";
+import Note from "../models/Note.js";
+import Task from "../models/Task.js";
+import Debate from "../models/Debate.js";
+import DebateComment from "../models/DebateComment.js";
 import protect from "../middleware/auth.js";
 import { generateEmbedding, generateAnswer } from "../utils/embeddings.js";
 import { cosineSimilarity } from "../utils/similarity.js";
@@ -192,6 +197,46 @@ router.get("/:workspaceId/members", protect, async (req, res) => {
 
     res.json(result);
   } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// DELETE /api/workspaces/:workspaceId — delete a workspace and all its data (admin only)
+router.delete("/:workspaceId", protect, async (req, res) => {
+  try {
+    const { workspaceId } = req.params;
+
+    const membership = await Membership.findOne({
+      user: req.userId,
+      workspace: workspaceId,
+      status: "active",
+    });
+
+    if (!membership || membership.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Only the workspace admin can delete this workspace" });
+    }
+
+    // Find all debates in this workspace, so we can delete their comments too
+    const debates = await Debate.find({ workspace: workspaceId });
+    const debateIds = debates.map((d) => d._id);
+
+    await Promise.all([
+      DebateComment.deleteMany({ debate: { $in: debateIds } }),
+      Debate.deleteMany({ workspace: workspaceId }),
+      Chunk.deleteMany({ workspace: workspaceId }),
+      Document.deleteMany({ workspace: workspaceId }),
+      Note.deleteMany({ workspace: workspaceId }),
+      Task.deleteMany({ workspace: workspaceId }),
+      Membership.deleteMany({ workspace: workspaceId }),
+    ]);
+
+    await Workspace.findByIdAndDelete(workspaceId);
+
+    res.json({ message: "Workspace deleted" });
+  } catch (err) {
+    console.error("Workspace delete error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
