@@ -1,21 +1,6 @@
-import nodemailer from "nodemailer";
+import axios from "axios";
 
-// Lazily create the transporter so this always reads a real env value —
-// same reasoning as the Cloudinary fix: avoid configuring at import time,
-// before dotenv.config() has run.
-function getTransporter() {
-  return nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-    family: 4, // force IPv4 — some hosting networks have broken/unreachable IPv6 routes to Gmail
-  });
-}
+const BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
 // Generates a random 6-digit numeric code
 export function generateOTP() {
@@ -23,21 +8,32 @@ export function generateOTP() {
 }
 
 export async function sendOTPEmail(toEmail, otp) {
-  const transporter = getTransporter();
-
-  await transporter.sendMail({
-    from: `CollabMind <${process.env.GMAIL_USER}>`,
-    to: toEmail,
-    subject: "Verify your CollabMind account",
-    html: `
-      <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto;">
-        <h2 style="color: #1a1a1a;">Verify your email</h2>
-        <p style="color: #444;">Enter this code to finish creating your CollabMind account:</p>
-        <p style="font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #1a1a1a; margin: 24px 0;">
-          ${otp}
-        </p>
-        <p style="color: #888; font-size: 13px;">This code expires in 10 minutes. If you didn't request this, you can safely ignore this email.</p>
-      </div>
-    `,
-  });
+  await axios.post(
+    BREVO_API_URL,
+    {
+      sender: {
+        name: "CollabMind",
+        email: process.env.BREVO_FROM_EMAIL,
+      },
+      to: [{ email: toEmail }],
+      subject: "Verify your CollabMind account",
+      htmlContent: `
+        <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto;">
+          <h2 style="color: #1a1a1a;">Verify your email</h2>
+          <p style="color: #444;">Enter this code to finish creating your CollabMind account:</p>
+          <p style="font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #1a1a1a; margin: 24px 0;">
+            ${otp}
+          </p>
+          <p style="color: #888; font-size: 13px;">This code expires in 10 minutes. If you didn't request this, you can safely ignore this email.</p>
+        </div>
+      `,
+    },
+    {
+      headers: {
+        "api-key": process.env.BREVO_API_KEY,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    }
+  );
 }
