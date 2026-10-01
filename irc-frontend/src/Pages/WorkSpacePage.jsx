@@ -16,6 +16,9 @@ import {
   ThumbsUp,
   Sparkles,
   Plus,
+  Menu,
+  X,
+  Info,
 } from "lucide-react";
 import MarginRail from "../components/MarginRail";
 import apiClient from "../api/client";
@@ -36,6 +39,10 @@ export default function WorkspacePage() {
   const [inviteSuccess, setInviteSuccess] = useState("");
 
   const [activeTab, setActiveTab] = useState("chat"); // "chat" | "notes" | "debates"
+
+  // Mobile panel toggles
+  const [showFilesPanel, setShowFilesPanel] = useState(false);
+  const [showSourcesPanel, setShowSourcesPanel] = useState(false);
 
   // Notes state
   const [noteContent, setNoteContent] = useState("");
@@ -409,8 +416,34 @@ export default function WorkspacePage() {
       : "text-text-muted border-white/10 bg-white/5";
 
   return (
-    <div className="flex h-full">
-      <div className="w-64 border-r border-white/5 p-4 overflow-y-auto flex flex-col gap-4">
+    <div className="flex h-full relative overflow-hidden">
+      {/* Mobile backdrop for files panel */}
+      {showFilesPanel && (
+        <div
+          onClick={() => setShowFilesPanel(false)}
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+        />
+      )}
+
+      {/* Left panel: documents + members */}
+      <div
+        className={`
+          w-64 border-r border-white/5 p-4 overflow-y-auto flex flex-col gap-4 bg-ink
+          fixed lg:static top-0 left-0 h-full z-40
+          transition-transform duration-200 ease-in-out
+          ${showFilesPanel ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0
+        `}
+      >
+        <div className="flex items-center justify-between lg:hidden">
+          <span className="text-sm font-medium text-paper-soft">Files & Members</span>
+          <button
+            onClick={() => setShowFilesPanel(false)}
+            className="text-text-muted hover:text-paper-soft"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
         <div>
           <label className="flex items-center gap-2 w-full justify-center rounded-md border border-dashed border-white/10 text-text-muted text-sm py-2.5 mb-4 hover:border-amber/50 hover:text-paper-soft transition-colors cursor-pointer">
             <Upload size={14} />
@@ -479,47 +512,64 @@ export default function WorkspacePage() {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col">
-        {/* Tab switcher */}
-        <div className="flex items-center gap-1 border-b border-white/5 px-4 pt-3">
-          <button
-            onClick={() => setActiveTab("chat")}
-            className={`flex items-center gap-1.5 text-sm px-3 py-2 rounded-t-md transition-colors ${
-              activeTab === "chat"
-                ? "text-paper-soft bg-ink-soft border-b-2 border-amber"
-                : "text-text-muted hover:text-paper-soft"
-            }`}
-          >
-            <MessageSquare size={14} />
-            Chat
-          </button>
-          <button
-            onClick={() => setActiveTab("notes")}
-            className={`flex items-center gap-1.5 text-sm px-3 py-2 rounded-t-md transition-colors ${
-              activeTab === "notes"
-                ? "text-paper-soft bg-ink-soft border-b-2 border-amber"
-                : "text-text-muted hover:text-paper-soft"
-            }`}
-          >
-            <StickyNote size={14} />
-            Notes
-          </button>
-          <button
-            onClick={() => setActiveTab("debates")}
-            className={`flex items-center gap-1.5 text-sm px-3 py-2 rounded-t-md transition-colors ${
-              activeTab === "debates"
-                ? "text-paper-soft bg-ink-soft border-b-2 border-amber"
-                : "text-text-muted hover:text-paper-soft"
-            }`}
-          >
-            <Swords size={14} />
-            Debates
-          </button>
+      <div className="flex flex-1 flex-col min-w-0">
+        {/* Tab switcher + mobile toggles */}
+        <div className="flex items-center justify-between border-b border-white/5 px-3 sm:px-4 pt-3">
+          <div className="flex items-center gap-1 overflow-x-auto">
+            <button
+              onClick={() => setShowFilesPanel(true)}
+              className="lg:hidden flex items-center gap-1 text-text-muted hover:text-paper-soft px-2 py-2 mr-1"
+            >
+              <Menu size={16} />
+            </button>
+            <button
+              onClick={() => setActiveTab("chat")}
+              className={`flex items-center gap-1.5 text-sm px-2.5 sm:px-3 py-2 rounded-t-md transition-colors whitespace-nowrap ${
+                activeTab === "chat"
+                  ? "text-paper-soft bg-ink-soft border-b-2 border-amber"
+                  : "text-text-muted hover:text-paper-soft"
+              }`}
+            >
+              <MessageSquare size={14} />
+              Chat
+            </button>
+            <button
+              onClick={() => setActiveTab("notes")}
+              className={`flex items-center gap-1.5 text-sm px-2.5 sm:px-3 py-2 rounded-t-md transition-colors whitespace-nowrap ${
+                activeTab === "notes"
+                  ? "text-paper-soft bg-ink-soft border-b-2 border-amber"
+                  : "text-text-muted hover:text-paper-soft"
+              }`}
+            >
+              <StickyNote size={14} />
+              Notes
+            </button>
+            <button
+              onClick={() => setActiveTab("debates")}
+              className={`flex items-center gap-1.5 text-sm px-2.5 sm:px-3 py-2 rounded-t-md transition-colors whitespace-nowrap ${
+                activeTab === "debates"
+                  ? "text-paper-soft bg-ink-soft border-b-2 border-amber"
+                  : "text-text-muted hover:text-paper-soft"
+              }`}
+            >
+              <Swords size={14} />
+              Debates
+            </button>
+          </div>
+
+          {activeTab === "chat" && (
+            <button
+              onClick={() => setShowSourcesPanel(true)}
+              className="xl:hidden flex items-center gap-1 text-text-muted hover:text-paper-soft px-2 py-2"
+            >
+              <Info size={16} />
+            </button>
+          )}
         </div>
 
         {activeTab === "chat" && (
           <>
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col gap-4">
               {messages.length === 0 && (
                 <p className="text-sm text-text-muted italic">
                   Ask a question about this workspace's documents.
@@ -528,7 +578,7 @@ export default function WorkspacePage() {
               {messages.map((m, i) => (
                 <div
                   key={i}
-                  className={`max-w-lg rounded-lg px-4 py-2.5 ${
+                  className={`max-w-[85%] sm:max-w-lg rounded-lg px-4 py-2.5 ${
                     m.role === "user"
                       ? "self-end bg-signal text-paper-soft text-sm"
                       : "self-start bg-ink-soft text-paper-soft border border-white/5"
@@ -542,17 +592,17 @@ export default function WorkspacePage() {
               )}
             </div>
 
-            <div className="border-t border-white/5 p-4 flex items-center gap-2">
+            <div className="border-t border-white/5 p-3 sm:p-4 flex items-center gap-2">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Ask something about this workspace's documents..."
-                className="flex-1 rounded-md bg-ink-soft text-paper-soft px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-signal placeholder:text-text-muted"
+                placeholder="Ask about this workspace's documents..."
+                className="flex-1 min-w-0 rounded-md bg-ink-soft text-paper-soft px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-signal placeholder:text-text-muted"
               />
               <button
                 onClick={handleSend}
-                className="rounded-md bg-amber text-ink p-2.5 hover:bg-amber-dim transition-colors"
+                className="rounded-md bg-amber text-ink p-2.5 hover:bg-amber-dim transition-colors flex-shrink-0"
               >
                 <Send size={16} />
               </button>
@@ -561,7 +611,7 @@ export default function WorkspacePage() {
         )}
 
         {activeTab === "notes" && (
-          <div className="flex-1 flex flex-col p-6 gap-3 overflow-y-auto">
+          <div className="flex-1 flex flex-col p-4 sm:p-6 gap-3 overflow-y-auto">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <p className="text-sm text-text-muted">
                 Shared notes for this workspace.{" "}
@@ -569,7 +619,7 @@ export default function WorkspacePage() {
                 {editPermission === "owner_only" && "Only the owner can edit."}
                 {editPermission === "selected" && "Only selected members can edit."}
               </p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 {noteSavedAt && !noteSaving && (
                   <span className="text-xs text-text-muted">
                     Saved {noteSavedAt.toLocaleTimeString()}
@@ -581,7 +631,9 @@ export default function WorkspacePage() {
                   className="flex items-center gap-1.5 rounded-md border border-white/10 text-text-muted px-3 py-1.5 text-sm hover:text-paper-soft hover:border-white/20 transition-colors disabled:opacity-50"
                 >
                   <Download size={14} />
-                  {exportingPdf ? "Exporting..." : "Export PDF"}
+                  <span className="hidden sm:inline">
+                    {exportingPdf ? "Exporting..." : "Export PDF"}
+                  </span>
                 </button>
                 {isOwner && (
                   <button
@@ -589,7 +641,7 @@ export default function WorkspacePage() {
                     className="flex items-center gap-1.5 rounded-md border border-white/10 text-text-muted px-3 py-1.5 text-sm hover:text-paper-soft hover:border-white/20 transition-colors"
                   >
                     <Settings size={14} />
-                    Permissions
+                    <span className="hidden sm:inline">Permissions</span>
                   </button>
                 )}
                 <button
@@ -691,11 +743,11 @@ export default function WorkspacePage() {
         )}
 
         {activeTab === "debates" && (
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
             {!selectedDebateId ? (
               // ---------- Debate list view ----------
               <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   <p className="text-sm text-text-muted">
                     Structured debates for this workspace — post positions, get AI-assisted
                     counter-arguments, and vote on the strongest points.
@@ -763,10 +815,10 @@ export default function WorkspacePage() {
                       onClick={() => handleOpenDebate(d._id)}
                       className="text-left rounded-md border border-white/5 bg-ink-soft/50 p-4 hover:border-white/20 transition-colors"
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <p className="text-paper-soft font-medium">{d.title}</p>
                         <span
-                          className={`text-xs px-2 py-0.5 rounded-full border ${
+                          className={`text-xs px-2 py-0.5 rounded-full border flex-shrink-0 ${
                             d.status === "open"
                               ? "text-emerald-400 border-emerald-400/30"
                               : "text-text-muted border-white/10"
@@ -863,7 +915,7 @@ export default function WorkspacePage() {
                       onSubmit={handlePostComment}
                       className="rounded-md border border-white/10 bg-ink-soft p-3 flex flex-col gap-2"
                     >
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         {["for", "against", "neutral"].map((s) => (
                           <button
                             key={s}
@@ -907,8 +959,8 @@ export default function WorkspacePage() {
                           key={c._id}
                           className={`rounded-md border p-3 ${stanceColor(c.stance)}`}
                         >
-                          <div className="flex items-center justify-between gap-2 mb-1.5">
-                            <div className="flex items-center gap-2 text-xs">
+                          <div className="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                            <div className="flex items-center gap-2 text-xs flex-wrap">
                               <span className="font-medium capitalize">{c.stance}</span>
                               {c.isAI ? (
                                 <span className="flex items-center gap-1 text-amber">
@@ -957,7 +1009,30 @@ export default function WorkspacePage() {
         )}
       </div>
 
-      <MarginRail sources={sources} />
+      {/* Sources panel: always visible on xl+, slide-in drawer below that */}
+      {showSourcesPanel && (
+        <div
+          onClick={() => setShowSourcesPanel(false)}
+          className="fixed inset-0 bg-black/50 z-30 xl:hidden"
+        />
+      )}
+      <div
+        className={`
+          fixed xl:static top-0 right-0 h-full z-40
+          transition-transform duration-200 ease-in-out
+          ${showSourcesPanel ? "translate-x-0" : "translate-x-full"} xl:translate-x-0
+        `}
+      >
+        <div className="relative h-full">
+          <button
+            onClick={() => setShowSourcesPanel(false)}
+            className="xl:hidden absolute top-3 right-3 z-10 text-text-muted hover:text-paper-soft"
+          >
+            <X size={18} />
+          </button>
+          <MarginRail sources={sources} />
+        </div>
+      </div>
     </div>
   );
 }
