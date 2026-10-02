@@ -34,8 +34,8 @@ export default function Sidebar({ isOpen, onClose }) {
 
       <aside
         className={`
-          flex h-screen w-60 flex-col justify-between bg-ink-soft/40 border-r border-white/5 px-3 py-5
-          fixed md:static top-0 left-0 z-40
+          flex h-dvh w-60 flex-col justify-between bg-ink-soft/40 border-r border-white/5 px-3 py-5
+          fixed md:static top-0 left-0 z-40 overflow-y-auto
           transition-transform duration-200 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
         `}

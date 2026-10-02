@@ -7,7 +7,7 @@ export default function AppLayout({ title, subtitle }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-ink overflow-hidden">
+    <div className="flex h-dvh bg-ink overflow-hidden">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
         <Topbar
