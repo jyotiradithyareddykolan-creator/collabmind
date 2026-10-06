@@ -193,35 +193,21 @@ The app will be available at `http://localhost:5173`.
 
 ## Deployment Notes
 
-- Backend and frontend are deployed as two separate services from the same GitHub monorepo, each pointed at its respective subfolder (`irc-backend` / `irc-frontend`) via the host's "Root Directory" setting.
-- Environment variables are configured separately on each hosting platform's dashboard — they are **not** read from a committed `.env` file (which is git-ignored).
-- CORS on the backend is restricted to the deployed frontend origin and `localhost` for local development.
-- File imports are case-sensitive on the Linux-based hosting environment even though the local development OS may not be — this was a real issue encountered during deployment and is worth double-checking if a build succeeds locally but fails on the host.
+- Backend (Render) and frontend (Vercel) are deployed as separate services from the same GitHub monorepo, each using its respective subfolder as the **Root Directory**.
+- Environment variables are configured on the hosting platforms and are not committed to GitHub.
+- Backend CORS allows the deployed frontend and `localhost` for development.
+- Signup verification emails use **Brevo's HTTPS API** because Gmail SMTP timed out on the backend host.
+- Brevo API keys are stored securely as environment variables. IP restrictions are disabled because the host's outbound IP can change.
+- File imports are case-sensitive on the Linux-based deployment environment, which can cause builds to fail even when they work locally on Windows.
 
 ---
 
 ## Known Limitations
 
-- OTP emails are sent via a personal Gmail account (SMTP), since email delivery to arbitrary recipients requires either a verified sending domain (not yet purchased) or this kind of workaround
-- Gemini API free tier is capped at a limited number of requests per day
-- MongoDB Atlas free tier has a storage cap suitable for demo/portfolio use, not high-volume production traffic
-- Backend free-tier hosting spins down after inactivity, causing a delayed first response
-- No account deletion feature yet (workspace deletion exists; full account deletion does not)
-- Deleting a document's database record does not currently delete the underlying file from Cloudinary storage
+- Verification emails use a verified Gmail sender instead of a branded domain and are subject to Brevo's free-tier limits.
+- Gemini API usage is limited by its free tier.
+- MongoDB Atlas free tier has limited storage and may pause after inactivity.
+- Backend free-tier hosting may take **30–60 seconds** to respond after inactivity.
+- Password reset and full account deletion are not implemented yet.
+- Documents cannot be renamed or individually deleted. Workspace deletion removes database records, but associated PDFs remain in Cloudinary.
 
----
-
-## Roadmap
-
-- [ ] Delete my account
-- [ ] Notes preview mode (rendered markdown while editing)
-- [ ] Edit/delete for documents
-- [ ] Verified sending domain for OTP emails (removes Gmail SMTP dependency)
-- [ ] Google Sign-In
-- [ ] Threaded (nested) debate replies
-
----
-
-## License
-
-This project was built for educational/portfolio purposes.
