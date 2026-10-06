@@ -46,16 +46,16 @@ CollabMind is a full-stack MERN application built for research teams to collabor
 - Signup flow with email verification: enter email → receive a one-time 6-digit code → verify → set name and password
 - Password requirements enforced on both frontend and backend (minimum 8 characters, at least 1 symbol)
 - Login with email + password (no OTP required after the account is created)
-- Create workspaces and invite teammates by email with an explicit accept/decline flow
+- Create workspaces, invite teammates by email with an explicit accept/decline flow
 - Role-based membership (admin / member)
-- Admin-only workspace deletion with cleanup of related database records (documents, notes, tasks, debates, and memberships)
+- Admin-only workspace deletion, with cleanup of related database records (documents, notes, tasks, debates, and memberships)
 
 ### Document Intelligence (RAG)
 
 - Upload PDF documents to a workspace
 - Automatic text extraction, chunking, and embedding generation
 - Ask questions grounded in uploaded documents — answers cite the specific source passages used
-- Documents stored permanently in Cloudinary rather than on local/ephemeral server disk
+- Documents stored permanently in Cloudinary (not on local/ephemeral server disk)
 
 ### Shared Notes
 
@@ -71,7 +71,7 @@ CollabMind is a full-stack MERN application built for research teams to collabor
 
 - Multiple structured debate topics per workspace
 - For / Against / Neutral comments with upvoting
-- AI capabilities, each with an optional "ground in documents" toggle:
+- AI capabilities (each with an optional "ground in documents" toggle):
   - Generate a counter-argument to any comment
   - Summarize the debate fairly, covering both sides
   - Have the AI argue a position as its own participant
@@ -117,8 +117,8 @@ AI-generated responses in chat and debates render as properly formatted text (bo
 
 **Hosting**
 
-- Backend: Render
-- Frontend: Vercel
+- Backend: [Render](https://render.com)
+- Frontend: [Vercel](https://vercel.com)
 - Both connected to GitHub for automatic redeployment on every push
 
 ---
